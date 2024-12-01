@@ -65,19 +65,13 @@ android {
         multiDexEnabled true
     }
 
-    signingConfigs {
-        // 添加签名配置
-        release {
-            // 完全删除 signingConfig 行
-            // signingConfig signingConfigs.release  <-- 删除此行
-            minifyEnabled true // 启用代码压缩以减小 APK 大小（可选，但建议用于发布版）
-        }
-    }
+   
 
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
+            minifyEnabled true // `minifyEnabled` 的正确位置
             signingConfig signingConfigs.release
         }
     }
