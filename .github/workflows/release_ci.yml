@@ -52,7 +52,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: 上传 Android 产物
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: android-release
           path: build/app/outputs/flutter-apk/*.apk
@@ -86,7 +86,7 @@ jobs:
           mv ./build/ios/iphoneos/Runner.ipa ./build/ios/Pilipala-iOS.ipa
         
       - name: 上传 iOS 产物
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ios-release
           path: build/ios/Pilipala-iOS.ipa
@@ -123,12 +123,12 @@ jobs:
             context.setOutput('upload_url', releaseResponse.data.upload_url)
 
       - name: 上传 Android 发布资源
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
             name: release
             path: artifacts/android-release/*.apk
       - name: 上传 iOS 发布资源
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
               name: release
               path: artifacts/ios-release/Pilipala-iOS.ipa
