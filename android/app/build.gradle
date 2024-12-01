@@ -68,13 +68,9 @@ android {
     signingConfigs {
         // 添加签名配置
         release {
-            // 配置密钥库文件的位置、别名、密码等信息
-            storeFile _storeFile
-            storePassword _storePassword
-            keyAlias _keyAlias
-            keyPassword _keyPassword
-            v1SigningEnabled true
-            v2SigningEnabled true
+            // 完全删除 signingConfig 行
+            // signingConfig signingConfigs.release  <-- 删除此行
+            minifyEnabled true // 启用代码压缩以减小 APK 大小（可选，但建议用于发布版）
         }
     }
 
