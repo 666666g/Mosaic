@@ -55,7 +55,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.guozhigq.pilipala"
+        applicationId "com.mengy.mosaic"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         targetSdkVersion flutter.targetSdkVersion
@@ -65,24 +65,14 @@ android {
         multiDexEnabled true
     }
 
-    signingConfigs {
-        // 添加签名配置
-        release {
-            // 配置密钥库文件的位置、别名、密码等信息
-            storeFile _storeFile
-            storePassword _storePassword
-            keyAlias _keyAlias
-            keyPassword _keyPassword
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
-    }
+   
 
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.release
+            minifyEnabled true // `minifyEnabled` 的正确位置
+           
         }
     }
 }
