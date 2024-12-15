@@ -88,7 +88,7 @@ jobs:
         with:
           name: Pilipala-Release
           path: |
-            build/*.ipa
+            build/ios/*.ipa
   upload:
     runs-on: ubuntu-latest
 
