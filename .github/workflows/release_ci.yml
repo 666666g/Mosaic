@@ -83,21 +83,12 @@ jobs:
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >>$GITHUB_OUTPUT
 
-      - name: 重命名应用
-        run: |
-          DATE=${{ steps.date.outputs.date }}
-          for file in app.ipa; do
-            new_file_name="build/Pili-${{ steps.version.outputs.version }}.ipa"
-            mv "$file" "$new_file_name"
-          done
-
       - name: 上传
         uses: actions/upload-artifact@v3
         with:
-          if-no-files-found: error
           name: Pilipala-Release
           path: |
-            build/Pili-*.ipa
+            build/*.ipa
 
   upload:
     runs-on: ubuntu-latest
