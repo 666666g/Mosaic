@@ -89,7 +89,6 @@ jobs:
           name: Pilipala-Release
           path: |
             build/*.ipa
-
   upload:
     runs-on: ubuntu-latest
 
@@ -97,11 +96,17 @@ jobs:
       - android
       - iOS
     steps:
-      - uses: actions/download-artifact@v3
+      - name: 下载 Android 制品
+        uses: actions/download-artifact@v3
+        with:
+          name: android-release
+          path: ./android-release    # 下载到 android-release 文件夹
+
+      - name: 下载 iOS 制品
+        uses: actions/download-artifact@v3
         with:
           name: Pilipala-Release
-          path: ./Pilipala-Release
-
+          path: ./Pilipala-Release   # 下载到 Pilipala-Release 文件夹
       - name: Install dependencies
         run: sudo apt-get install tree -y
 
@@ -118,4 +123,6 @@ jobs:
           omitNameDuringUpdate: true
           omitPrereleaseDuringUpdate: true
           allowUpdates: true
-          artifacts: Pilipala-Release/*
+          artifacts: |
+            android-release/*
+            Pilipala-Release/*   # 上传两个文件夹下的所有文件
