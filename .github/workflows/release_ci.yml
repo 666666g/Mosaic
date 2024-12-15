@@ -72,13 +72,17 @@ jobs:
 
       - name: 重命名应用
         run: |
-          # DATE=${{ steps.date.outputs.date }}
-          for file in build/app/outputs/flutter-apk/app-*.apk; do
-            if [[ $file =~ app-(.?*)release.apk ]]; then
-              new_file_name="build/app/outputs/flutter-apk/Pili-${BASH_REMATCH[1]}${{ steps.version.outputs.version }}.apk"
-              mv "$file" "$new_file_name"
-            fi
-          done
+           # DATE=${{ steps.date.outputs.date }}
+           cd build/app/outputs/flutter-apk/
+
+           for file in app-*.apk; do
+             if [[ $file =~ app-(.*)-release\.apk ]]; then
+               architecture="${BASH_REMATCH[1]}"
+               new_file_name="Pili-${architecture}-${{ steps.version.outputs.version }}.apk"
+               mv "$file" "$new_file_name"
+             fi
+           done
+
 
       - name: 上传
         uses: actions/upload-artifact@v3
