@@ -76,19 +76,14 @@ jobs:
       - name: flutter build ipa
         run: |
           flutter build ios --release --no-codesign 
-          ln -sf ./build/ios/iphoneos Payload
-          zip -r9 app.ipa Payload/runner.app
-
-      - name: 获取版本号
-        id: version
-        run: echo "version=${GITHUB_REF#refs/tags/v}" >>$GITHUB_OUTPUT
+          ln -sf ./build/ios/iphoneos Payload   #  这一步是否有必要你来检查，它创建了一个叫Payload的软链接，你可能不需要
+          zip -r9 app.ipa Payload/   #  打包Payload这个文件夹下的runner.app, 生成app.ipa文件
 
       - name: 上传
         uses: actions/upload-artifact@v3
         with:
           name: Pilipala-Release
-          path: |
-            build/ios/*.ipa
+          path: build/ios/app.ipa  # 确保这里是你构建的ipa的正确路径
   upload:
     runs-on: ubuntu-latest
 
