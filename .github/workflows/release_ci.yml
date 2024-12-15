@@ -62,39 +62,11 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD}}
 
-      - name: 获取版本号
-        id: version
-        run: echo "version=${GITHUB_REF#refs/tags/v}" >>$GITHUB_OUTPUT
-
-      # - name: 获取当前日期
-      #   id: date
-      #   run: echo "date=$(date +'%m%d')" >>$GITHUB_OUTPUT
-
-      - name: 重命名应用
-        run: |
-          cd build/app/outputs/flutter-apk/
-          mkdir -p refs/heads # 新增：创建 refs/heads 目录
-
-          for file in app-*.apk; do
-            if [[ $file =~ app-(.*)-release\.apk ]]; then
-              architecture="${BASH_REMATCH[1]}"
-              # 使用正确的版本号变量
-              new_file_name="Pili-${architecture}-${{ steps.version.outputs.version }}.apk" 
-              # 将文件移动到 refs/heads/ 目录下
-              mv "$file" "refs/heads/$new_file_name"
-              echo "Renamed $file to refs/heads/$new_file_name"
-            fi
-          done
-
-
-
-
-      - name: 上传
-        uses: actions/upload-artifact@v3
+      - name: 上传 Android 产物
+        uses: actions/upload-artifact@v4
         with:
-          name: Pilipala-Release
-          path: |
-            build/app/outputs/flutter-apk/Pili-*.apk
+          name: android-release
+          path: build/app/outputs/flutter-apk/*.apk
 
   iOS:
     runs-on: macos-latest
