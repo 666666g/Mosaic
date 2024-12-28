@@ -43,7 +43,12 @@ jobs:
       - name: 下载项目依赖
         run: flutter pub get
 
-
+# 添加以下步骤
+      - name: 打印JAVA Version
+        run: java -version
+      
+      - name: 打印Gradle Version
+        run: ./android/gradlew -v
 
       - name: flutter build apk
         run: flutter build apk --release --split-per-abi
