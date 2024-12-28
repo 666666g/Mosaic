@@ -48,7 +48,7 @@ jobs:
         run: java -version
       
       - name: 打印Gradle Version
-        run: ./android/gradlew -v
+        run: ./gradlew -v
 
       - name: flutter build apk
         run: flutter build apk --release --split-per-abi
