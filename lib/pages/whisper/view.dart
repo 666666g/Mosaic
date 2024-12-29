@@ -6,7 +6,6 @@ import 'package:pilipala/common/constants.dart';
 import 'package:pilipala/common/skeleton/skeleton.dart';
 import 'package:pilipala/common/widgets/network_img_layer.dart';
 import 'package:pilipala/utils/utils.dart';
-
 import 'controller.dart';
 
 class WhisperPage extends StatefulWidget {
@@ -18,7 +17,7 @@ class WhisperPage extends StatefulWidget {
 
 class _WhisperPageState extends State<WhisperPage> {
   late final WhisperController _whisperController =
-      Get.put(WhisperController());
+  Get.put(WhisperController());
   late Future _futureBuilderFuture;
   final ScrollController _scrollController = ScrollController();
 
@@ -33,10 +32,11 @@ class _WhisperPageState extends State<WhisperPage> {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       EasyThrottle.throttle('my-throttler', const Duration(milliseconds: 800),
-          () async {
-        await _whisperController.onLoad();
-        _whisperController.isLoading = true;
-      });
+              () async {
+            if (_whisperController.isLoading) return;
+            await _whisperController.onLoad();
+
+          });
     }
   }
 
@@ -63,7 +63,7 @@ class _WhisperPageState extends State<WhisperPage> {
                     child: SizedBox(
                       height: constraints.maxWidth / 4,
                       child: Obx(
-                        () => GridView.count(
+                            () => GridView.count(
                           primary: false,
                           crossAxisCount: 4,
                           padding: const EdgeInsets.all(0),
@@ -125,28 +125,28 @@ class _WhisperPageState extends State<WhisperPage> {
                     if (data != null && data['status']) {
                       RxList sessionList = _whisperController.sessionList;
                       return Obx(
-                        () => sessionList.isEmpty
+                            () => sessionList.isEmpty
                             ? const SizedBox()
                             : ListView.separated(
-                                itemCount: sessionList.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (_, int i) {
-                                  return SessionItem(
-                                    sessionItem: sessionList[i],
-                                    changeFucCall: () => sessionList.refresh(),
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return Divider(
-                                    indent: 72,
-                                    endIndent: 20,
-                                    height: 6,
-                                    color: Colors.grey.withOpacity(0.1),
-                                  );
-                                },
-                              ),
+                          itemCount: sessionList.length,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (_, int i) {
+                            return SessionItem(
+                              sessionItem: sessionList[i],
+                              changeFucCall: () => sessionList.refresh(),
+                            );
+                          },
+                          separatorBuilder:
+                              (BuildContext context, int index) {
+                            return Divider(
+                              indent: 72,
+                              endIndent: 20,
+                              height: 6,
+                              color: Colors.grey.withOpacity(0.1),
+                            );
+                          },
+                        ),
                       );
                     } else {
                       // 请求错误
@@ -218,7 +218,7 @@ class SessionItem extends StatelessWidget {
     final content = sessionItem.lastMsg.content;
     final msgStatus = sessionItem.lastMsg.msgStatus;
     final int msgType = sessionItem.lastMsg.msgType;
-
+    String faceUrl = sessionItem.accountInfo?.face ?? ''; // 提供一个默认值
     return ListTile(
       onTap: () {
         sessionItem.unreadCount = 0;
@@ -227,13 +227,14 @@ class SessionItem extends StatelessWidget {
           '/whisperDetail',
           parameters: {
             'talkerId': sessionItem.talkerId.toString(),
-            'name': sessionItem.accountInfo.name,
-            'face': sessionItem.accountInfo.face,
+            'name': sessionItem.accountInfo?.name  ?? '客服消息',
+            'face': faceUrl,
             'mid': (sessionItem.accountInfo?.mid ?? 0).toString(),
             'heroTag': heroTag,
           },
         );
       },
+
       leading: Badge(
         isLabelVisible: sessionItem.unreadCount > 0,
         label: Text(sessionItem.unreadCount.toString()),
@@ -241,26 +242,26 @@ class SessionItem extends StatelessWidget {
         child: Hero(
           tag: heroTag,
           child: NetworkImgLayer(
-            width: 45,
-            height: 45,
-            type: 'avatar',
-            src: sessionItem.accountInfo.face,
+              width: 45,
+              height: 45,
+              type: 'avatar',
+              src:  faceUrl == '' ? 'https://i0.hdslb.com/bfs/face/member/noface.jpg': faceUrl
           ),
         ),
       ),
-      title: Text(sessionItem.accountInfo.name),
+      title:  Text(sessionItem.accountInfo?.name  ?? '客服消息'),
       subtitle: Text(
           msgStatus == 1
               ? '你撤回了一条消息'
               : msgType == 2
-                  ? '[图片]'
-                  : content != null && content != ''
-                      ? (content['text'] ??
-                          content['content'] ??
-                          content['title'] ??
-                          content['reply_content'] ??
-                          '不支持的消息类型')
-                      : '不支持的消息类型',
+              ? '[图片]'
+              : content != null && content != ''
+              ? (content['text'] ??
+              content['content'] ??
+              content['title'] ??
+              content['reply_content'] ??
+              '不支持的消息类型')
+              : '不支持的消息类型',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context)
